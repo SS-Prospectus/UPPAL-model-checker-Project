@@ -1,0 +1,588 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.6//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_6.dtd'>
+<nta>
+	<declaration>// Place global declarations here.
+chan transaction_failed_msg,end_membership,back, view_membership_hist;
+chan initiate_trans,sign_out_user,authentication_successful,authentication_failed,buy_card,view_membership_details,buy_platinum_card,buy_gold_card,transaction_successful,sign_in,transaction_failed,purchase_gold,purchase_platinum,gold_transaction_successful,platinum_transaction_successful;
+bool authenticated=false,transaction_in_progress=false,purchasing_gold=false,purchasing_platinum=false;
+int gold_cost = 600,platinum_cost = 800,requested_amt =0,balance=0;</declaration>
+	<template>
+		<name x="5" y="5">Lib</name>
+		<declaration>// Place local declarations here.
+</declaration>
+		<location id="id0" x="-756" y="-646">
+			<name x="-766" y="-680">start</name>
+		</location>
+		<location id="id1" x="-289" y="-527">
+			<name x="-340" y="-561">Authenticating</name>
+		</location>
+		<location id="id2" x="-85" y="-646">
+			<name x="-110" y="-680">home</name>
+		</location>
+		<location id="id3" x="85" y="-646">
+			<name x="17" y="-680">buy_card_options</name>
+		</location>
+		<location id="id4" x="-170" y="-340">
+			<name x="-229" y="-331">view_details</name>
+		</location>
+		<location id="id5" x="-467" y="-425">
+			<name x="-518" y="-417">Throw_message</name>
+		</location>
+		<location id="id6" x="357" y="-722">
+			<name x="323" y="-756">gold_selected</name>
+		</location>
+		<location id="id7" x="425" y="-586">
+			<name x="357" y="-578">platinum_selected</name>
+		</location>
+		<location id="id8" x="807" y="-722">
+			<name x="697" y="-714">processing_transaction</name>
+		</location>
+		<location id="id9" x="187" y="-348">
+			<name x="119" y="-339">Transaction_failed_dialog</name>
+		</location>
+		<location id="id10" x="289" y="-858">
+			<name x="213" y="-900">gold_card_purchased</name>
+		</location>
+		<location id="id11" x="-527" y="-340">
+			<name x="-595" y="-331">membership_ended</name>
+		</location>
+		<location id="id12" x="238" y="-952">
+			<name x="196" y="-986">platinum_card_purchased</name>
+		</location>
+		<location id="id13" x="765" y="-858">
+			<name x="689" y="-892">bank_confirmation</name>
+		</location>
+		<location id="id14" x="-348" y="-952">
+			<name x="-433" y="-986">confirm_user_platinum</name>
+		</location>
+		<location id="id15" x="-297" y="-858">
+			<name x="-323" y="-892">confirm_user_gold</name>
+		</location>
+		<location id="id16" x="-161" y="-773">
+			<name x="-263" y="-807">view_membership_history</name>
+		</location>
+		<init ref="id0"/>
+		<transition id="id17">
+			<source ref="id16"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-195" y="-731">back?</label>
+			<nail x="-178" y="-714"/>
+			<nail x="-153" y="-671"/>
+		</transition>
+		<transition id="id18">
+			<source ref="id2"/>
+			<target ref="id16"/>
+			<label kind="synchronisation" x="-144" y="-739">view_membership_hist?</label>
+		</transition>
+		<transition id="id19">
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-17" y="-714">back?</label>
+			<nail x="25" y="-697"/>
+			<nail x="-25" y="-697"/>
+		</transition>
+		<transition id="id20">
+			<source ref="id2"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-467" y="-671">sign_out_user?</label>
+			<label kind="assignment" x="-493" y="-654">authenticated = false</label>
+			<nail x="-348" y="-646"/>
+		</transition>
+		<transition id="id21">
+			<source ref="id4"/>
+			<target ref="id2"/>
+			<label kind="synchronisation" x="-51" y="-518">back?</label>
+			<nail x="-51" y="-416"/>
+			<nail x="-25" y="-535"/>
+		</transition>
+		<transition id="id22">
+			<source ref="id14"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-527" y="-884">sign_out_user!</label>
+			<label kind="assignment" x="-586" y="-867">authenticated = false</label>
+		</transition>
+		<transition id="id23">
+			<source ref="id15"/>
+			<target ref="id0"/>
+			<label kind="synchronisation" x="-493" y="-790">sign_out_user!</label>
+			<label kind="assignment" x="-535" y="-773">authenticated = false</label>
+		</transition>
+		<transition id="id24">
+			<source ref="id10"/>
+			<target ref="id15"/>
+			<label kind="synchronisation" x="-76" y="-875">gold_transaction_successful!</label>
+		</transition>
+		<transition id="id25">
+			<source ref="id12"/>
+			<target ref="id14"/>
+			<label kind="synchronisation" x="-51" y="-969">platinum_transaction_successful!</label>
+		</transition>
+		<transition id="id26">
+			<source ref="id13"/>
+			<target ref="id12"/>
+			<label kind="guard" x="476" y="-969">purchasing_platinum==true</label>
+			<label kind="synchronisation" x="467" y="-952">transaction_successful?</label>
+			<label kind="assignment" x="450" y="-935">transaction_in_progress = false</label>
+			<nail x="680" y="-952"/>
+			<nail x="331" y="-952"/>
+		</transition>
+		<transition id="id27">
+			<source ref="id13"/>
+			<target ref="id10"/>
+			<label kind="guard" x="416" y="-867">purchasing_gold==true</label>
+			<label kind="synchronisation" x="425" y="-850">transaction_successful?</label>
+			<label kind="assignment" x="433" y="-833">transaction_in_progress = false</label>
+		</transition>
+		<transition id="id28">
+			<source ref="id13"/>
+			<target ref="id9"/>
+			<label kind="synchronisation" x="476" y="-374">transaction_failed?</label>
+			<label kind="assignment" x="425" y="-348">transaction_in_progress = false</label>
+			<nail x="943" y="-637"/>
+			<nail x="663" y="-348"/>
+		</transition>
+		<transition id="id29">
+			<source ref="id8"/>
+			<target ref="id13"/>
+			<label kind="synchronisation" x="714" y="-756">initiate_trans!</label>
+		</transition>
+		<transition id="id30">
+			<source ref="id11"/>
+			<target ref="id0"/>
+		</transition>
+		<transition id="id31">
+			<source ref="id4"/>
+			<target ref="id11"/>
+			<label kind="synchronisation" x="-374" y="-357">end_membership?</label>
+		</transition>
+		<transition id="id32">
+			<source ref="id9"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="51" y="-433">transaction_failed_msg!</label>
+		</transition>
+		<transition id="id33">
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="501" y="-646">purchase_platinum?</label>
+			<label kind="assignment" x="459" y="-629">transaction_in_progress = true</label>
+		</transition>
+		<transition id="id34">
+			<source ref="id6"/>
+			<target ref="id8"/>
+			<label kind="synchronisation" x="450" y="-731">purchase_gold?</label>
+			<label kind="assignment" x="382" y="-714">transaction_in_progress = true</label>
+		</transition>
+		<transition id="id35">
+			<source ref="id3"/>
+			<target ref="id7"/>
+			<label kind="synchronisation" x="144" y="-629">buy_platinum_card?</label>
+		</transition>
+		<transition id="id36">
+			<source ref="id3"/>
+			<target ref="id6"/>
+			<label kind="synchronisation" x="153" y="-697">buy_gold_card?</label>
+		</transition>
+		<transition id="id37">
+			<source ref="id5"/>
+			<target ref="id0"/>
+			<label kind="assignment" x="-629" y="-527">authenticated = false</label>
+		</transition>
+		<transition id="id38">
+			<source ref="id1"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-459" y="-493">authenticated == false</label>
+			<label kind="synchronisation" x="-476" y="-476">authentication_failed!</label>
+		</transition>
+		<transition id="id39">
+			<source ref="id2"/>
+			<target ref="id4"/>
+			<label kind="synchronisation" x="-255" y="-493">view_membership_details?</label>
+		</transition>
+		<transition id="id40">
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="synchronisation" x="-51" y="-637">buy_card?</label>
+		</transition>
+		<transition id="id41">
+			<source ref="id1"/>
+			<target ref="id2"/>
+			<label kind="guard" x="-289" y="-612">authenticated == true</label>
+			<label kind="synchronisation" x="-323" y="-595">authentication_successful!</label>
+		</transition>
+		<transition id="id42">
+			<source ref="id0"/>
+			<target ref="id1"/>
+			<label kind="synchronisation" x="-535" y="-595">sign_in?</label>
+		</transition>
+	</template>
+	<template>
+		<name>User</name>
+		<declaration>bool gold_member =false;
+bool platinum_member =false;
+int user_balance = 700;
+bool email_registered = true;</declaration>
+		<location id="id43" x="-1266" y="-93">
+			<name x="-1327" y="-127">await_authentication</name>
+		</location>
+		<location id="id44" x="-935" y="-102">
+			<name x="-960" y="-136">home</name>
+		</location>
+		<location id="id45" x="-1564" y="-229">
+			<name x="-1574" y="-263">signed_out</name>
+		</location>
+		<location id="id46" x="-782" y="-323">
+			<name x="-816" y="-357">buy_card_options</name>
+		</location>
+		<location id="id47" x="-1062" y="76">
+			<name x="-1062" y="84">view_membership</name>
+		</location>
+		<location id="id48" x="-1385" y="-25">
+			<name x="-1411" y="-8">receive_auth_fail</name>
+		</location>
+		<location id="id49" x="-34" y="-204">
+			<name x="-136" y="-178">await_lib_confirmation</name>
+		</location>
+		<location id="id50" x="-484" y="-433">
+			<name x="-543" y="-467">gold_card_purchased</name>
+		</location>
+		<location id="id51" x="-510" y="76">
+			<name x="-578" y="85">purchase_failed</name>
+		</location>
+		<location id="id52" x="-544" y="-178">
+			<name x="-654" y="-169">platinum_selected</name>
+		</location>
+		<location id="id53" x="-459" y="-323">
+			<name x="-552" y="-348">gold_selected</name>
+		</location>
+		<location id="id54" x="-510" y="-561">
+			<name x="-520" y="-595">platinum_card_purchased</name>
+		</location>
+		<location id="id55" x="-1394" y="76">
+			<name x="-1445" y="85">membership_ended</name>
+		</location>
+		<location id="id56" x="-721" y="-102">
+			<name x="-782" y="-136">view_history</name>
+		</location>
+		<init ref="id45"/>
+		<transition id="id57">
+			<source ref="id56"/>
+			<target ref="id44"/>
+			<label kind="synchronisation" x="-850" y="-85">back!</label>
+			<nail x="-790" y="-68"/>
+			<nail x="-884" y="-68"/>
+		</transition>
+		<transition id="id58">
+			<source ref="id44"/>
+			<target ref="id56"/>
+			<label kind="synchronisation" x="-918" y="-119">view_membership_hist!</label>
+		</transition>
+		<transition id="id59">
+			<source ref="id46"/>
+			<target ref="id44"/>
+			<label kind="synchronisation" x="-857" y="-331">back!</label>
+			<nail x="-875" y="-306"/>
+			<nail x="-977" y="-178"/>
+		</transition>
+		<transition id="id60">
+			<source ref="id44"/>
+			<target ref="id45"/>
+			<label kind="synchronisation" x="-1156" y="-178">sign_out_user!</label>
+			<nail x="-1021" y="-157"/>
+			<nail x="-1266" y="-153"/>
+		</transition>
+		<transition id="id61">
+			<source ref="id47"/>
+			<target ref="id44"/>
+			<label kind="synchronisation" x="-943" y="17">back!</label>
+			<nail x="-960" y="34"/>
+			<nail x="-918" y="-42"/>
+		</transition>
+		<transition id="id62">
+			<source ref="id55"/>
+			<target ref="id45"/>
+			<nail x="-1445" y="76"/>
+		</transition>
+		<transition id="id63">
+			<source ref="id47"/>
+			<target ref="id55"/>
+			<label kind="synchronisation" x="-1275" y="34">end_membership!</label>
+			<label kind="assignment" x="-1299" y="59">authenticated = false,
+gold_member = false,
+platinum_member = false</label>
+		</transition>
+		<transition id="id64">
+			<source ref="id54"/>
+			<target ref="id45"/>
+			<label kind="synchronisation" x="-943" y="-552">sign_out_user?</label>
+			<nail x="-1003" y="-561"/>
+			<nail x="-1198" y="-527"/>
+		</transition>
+		<transition id="id65">
+			<source ref="id49"/>
+			<target ref="id54"/>
+			<label kind="synchronisation" x="-399" y="-552">platinum_transaction_successful?</label>
+			<label kind="assignment" x="-204" y="-484">platinum_member = true,
+user_balance = balance</label>
+			<nail x="-272" y="-518"/>
+		</transition>
+		<transition id="id66">
+			<source ref="id50"/>
+			<target ref="id45"/>
+			<label kind="synchronisation" x="-985" y="-442">sign_out_user?</label>
+			<nail x="-1037" y="-433"/>
+			<nail x="-1249" y="-391"/>
+		</transition>
+		<transition id="id67">
+			<source ref="id51"/>
+			<target ref="id46"/>
+			<nail x="-544" y="34"/>
+			<nail x="-561" y="8"/>
+			<nail x="-595" y="-42"/>
+			<nail x="-637" y="-101"/>
+		</transition>
+		<transition id="id68">
+			<source ref="id46"/>
+			<target ref="id52"/>
+			<label kind="synchronisation" x="-680" y="-255">buy_platinum_card!</label>
+			<nail x="-688" y="-314"/>
+			<nail x="-654" y="-289"/>
+		</transition>
+		<transition id="id69">
+			<source ref="id46"/>
+			<target ref="id53"/>
+			<label kind="synchronisation" x="-671" y="-314">buy_gold_card!</label>
+		</transition>
+		<transition id="id70">
+			<source ref="id48"/>
+			<target ref="id45"/>
+		</transition>
+		<transition id="id71">
+			<source ref="id43"/>
+			<target ref="id48"/>
+			<label kind="synchronisation" x="-1377" y="-68">authentication_failed?</label>
+		</transition>
+		<transition id="id72">
+			<source ref="id44"/>
+			<target ref="id47"/>
+			<label kind="guard" x="-1173" y="-25">gold_member == true || 
+platinum_member == true</label>
+			<label kind="synchronisation" x="-1147" y="-51">view_membership_details!</label>
+		</transition>
+		<transition id="id73">
+			<source ref="id44"/>
+			<target ref="id46"/>
+			<label kind="guard" x="-1122" y="-212">gold_member == false &amp;&amp; platinum_member == false</label>
+			<label kind="synchronisation" x="-918" y="-178">buy_card!</label>
+		</transition>
+		<transition id="id74">
+			<source ref="id45"/>
+			<target ref="id43"/>
+			<label kind="synchronisation" x="-1462" y="-178">sign_in!</label>
+			<label kind="assignment" x="-1453" y="-161">authenticated = 
+email_registered</label>
+		</transition>
+		<transition id="id75">
+			<source ref="id43"/>
+			<target ref="id44"/>
+			<label kind="synchronisation" x="-1224" y="-102">authentication_successful?</label>
+		</transition>
+		<transition id="id76">
+			<source ref="id49"/>
+			<target ref="id50"/>
+			<label kind="synchronisation" x="-425" y="-408">gold_transaction_successful?</label>
+			<label kind="assignment" x="-331" y="-391">gold_member = true,
+user_balance = balance</label>
+			<nail x="-272" y="-382"/>
+		</transition>
+		<transition id="id77">
+			<source ref="id49"/>
+			<target ref="id51"/>
+			<label kind="synchronisation" x="-476" y="17">transaction_failed_msg?</label>
+			<nail x="-136" y="76"/>
+		</transition>
+		<transition id="id78">
+			<source ref="id52"/>
+			<target ref="id49"/>
+			<label kind="guard" x="-459" y="-178">transaction_in_progress == false</label>
+			<label kind="synchronisation" x="-467" y="-195">purchase_platinum!</label>
+			<label kind="assignment" x="-459" y="-161">requested_amt = platinum_cost,
+balance = user_balance,
+purchasing_gold=false,
+purchasing_platinum=true</label>
+		</transition>
+		<transition id="id79">
+			<source ref="id53"/>
+			<target ref="id49"/>
+			<label kind="guard" x="-433" y="-306">transaction_in_progress == false</label>
+			<label kind="synchronisation" x="-442" y="-323">purchase_gold!</label>
+			<label kind="assignment" x="-374" y="-289">requested_amt = gold_cost,
+balance= user_balance,
+purchasing_gold=true,
+purchasing_platinum=false</label>
+		</transition>
+	</template>
+	<template>
+		<name>Bank</name>
+		<location id="id80" x="-433" y="-187">
+			<name x="-459" y="-221">bank_start</name>
+		</location>
+		<location id="id81" x="-85" y="-187">
+			<name x="-153" y="-230">Checking_Req_Validity</name>
+		</location>
+		<location id="id82" x="93" y="-289">
+			<name x="59" y="-323">Tran_Success</name>
+		</location>
+		<location id="id83" x="263" y="-42">
+			<name x="254" y="-76">Tran_Failed</name>
+		</location>
+		<location id="id84" x="552" y="-170">
+			<name x="552" y="-204">Thanks_dialog</name>
+		</location>
+		<init ref="id80"/>
+		<transition id="id85">
+			<source ref="id84"/>
+			<target ref="id80"/>
+			<nail x="399" y="17"/>
+			<nail x="-170" y="17"/>
+		</transition>
+		<transition id="id86">
+			<source ref="id83"/>
+			<target ref="id80"/>
+			<label kind="synchronisation" x="-161" y="-59">transaction_failed!</label>
+			<nail x="-178" y="-42"/>
+		</transition>
+		<transition id="id87">
+			<source ref="id80"/>
+			<target ref="id81"/>
+			<label kind="synchronisation" x="-331" y="-212">initiate_trans?</label>
+		</transition>
+		<transition id="id88">
+			<source ref="id82"/>
+			<target ref="id84"/>
+			<label kind="synchronisation" x="213" y="-276">transaction_successful!</label>
+			<label kind="assignment" x="213" y="-259">balance = balance - requested_amt</label>
+			<nail x="382" y="-246"/>
+		</transition>
+		<transition id="id89">
+			<source ref="id81"/>
+			<target ref="id83"/>
+			<label kind="guard" x="8" y="-127">balance&lt;requested_amt</label>
+			<nail x="25" y="-178"/>
+		</transition>
+		<transition id="id90">
+			<source ref="id81"/>
+			<target ref="id82"/>
+			<label kind="guard" x="-34" y="-263">balance&gt;=requested_amt</label>
+		</transition>
+	</template>
+	<system>// Place template instantiations here.
+lib = Lib();
+user1 = User();
+user2 = User();
+bank = Bank();
+// List one or more processes to be composed into a system.
+system lib,user1,user2,bank;
+</system>
+	<queries>
+		<query>
+			<formula>A[] !(user1.gold_member &amp;&amp; user1.platinum_member)</formula>
+			<comment>User can't have both gold and platinum membership together </comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 22:07:48 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A[] !(lib.processing_transaction &amp;&amp; !authenticated)
+</formula>
+			<comment>Transactions should only be initiated when the user is authenticated.</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 16:21:02 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A[] not deadlock</formula>
+			<comment> no deadlock</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 16:08:15 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A[] !(purchasing_gold &amp;&amp; purchasing_platinum)</formula>
+			<comment>A user cannot purchase both gold and platinum cards in the same transaction.
+</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 16:14:31 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A&lt;&gt; (user1.signed_out)
+</formula>
+			<comment>Initiating the end of membership should eventually lead to membership termination or cancellation.</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 22:07:46 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A&lt;&gt; (bank.Tran_Success imply user1.signed_out)</formula>
+			<comment>User signs out after every successful transaction</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 20:41:12 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A[] !(user1.membership_ended &amp;&amp; (user1.gold_member|| user1.platinum_member))
+</formula>
+			<comment>If the membership is ended then the user doesn't has any membership card</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 22:55:08 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A[] !(user1.email_registered) imply !(user1.buy_card_options)</formula>
+			<comment>If a user's email is not registered then no membership can't be bought</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 20:42:21 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A[] !(user1.view_membership &amp;&amp; !user1.gold_member &amp;&amp; !user1.platinum_member)</formula>
+			<comment>Membership details can't be viewed unless you have a membership card</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 22:13:59 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A&lt;&gt; user1.purchase_failed imply (!user1.gold_member &amp;&amp; !user1.platinum_member)</formula>
+			<comment>If the purchased failed then user doesn't has any membership</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 23:01:53 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (!user1.gold_member &amp;&amp; !user1.platinum_member) imply user1.view_history</formula>
+			<comment>User can view membership history even without any membership card</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 22:54:56 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A[] !(user1.buy_card_options &amp;&amp; (user1.gold_member||user1.platinum_member))</formula>
+			<comment>if a user has a membership they can't buy another membership</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 22:18:57 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (bank.Tran_Success imply user1.view_membership)</formula>
+			<comment>If a transaction is successful then a path exits where you can eventually view-membership-details</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 22:59:09 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (user1.buy_card_options imply (user1.signed_out &amp;&amp; (!user1.gold_member &amp;&amp; !user1.platinum_member)))</formula>
+			<comment>User can sign out even without buying any membership card</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 22:59:11 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>A[] !(user1.await_authentication &amp;&amp; user2.await_authentication)</formula>
+			<comment>No more than one user can be signed-in at a time </comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 22:34:56 +0530">
+			</result>
+		</query>
+		<query>
+			<formula>E&lt;&gt; (user1.membership_ended imply user1.buy_card_options)</formula>
+			<comment>User can buy membership again after the membership ended</comment>
+			<result outcome="success" type="quality" timestamp="2023-11-30 23:17:03 +0530">
+			</result>
+		</query>
+	</queries>
+</nta>

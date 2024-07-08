@@ -1,0 +1,13 @@
+-->The assignment for 'Model Checking' prepared for the  LICS coursework was undertaken by the following group members:
+
+(Group 7)
+
+(1)Suryash Singh(2022A7PS0093P)
+
+(2)Shubham Kumar(2022A7PS0056P)
+
+(3)Saket Jain(2022A7PS0118P)
+
+(4)Samarth Sanjay Lande(2022A7PS0096P)
+
+(5)Kshitiz Bhatta(2022A7PS0049P)
